@@ -25,6 +25,10 @@ jobs:
       - name: Download ZIP file
         run: |
           curl -L -o download.zip "${{ env.ZIP_URL }}"
+
+      - name: Delete ZIP file
+        run: |
+          rm download.zip
           
       - name: Unzip file
         run: |
