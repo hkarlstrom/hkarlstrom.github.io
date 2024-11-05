@@ -26,14 +26,14 @@ jobs:
         run: |
           curl -L -o download.zip "${{ env.ZIP_URL }}"
 
-      - name: Delete ZIP file
-        run: |
-          rm download.zip
-          
       - name: Unzip file
         run: |
           unzip -o download.zip -d .
-
+          
+      - name: Delete ZIP file
+        run: |
+          rm download.zip
+      
       - name: Commit and push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
