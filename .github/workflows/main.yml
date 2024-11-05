@@ -12,7 +12,11 @@ jobs:
       - name: Check out the main branch
         uses: actions/checkout@v4
         with:
-          ref: main  # Ensure we're working on the main branch
+          ref: main
+
+      - name: Delete all existing files from the main branch
+        run: |
+          find . -mindepth 1 -not -path "./.git*" -exec rm -rf {} +  # Delete everything except .git directory
 
       - name: Extract ZIP URL from payload
         id: extract
@@ -21,27 +25,10 @@ jobs:
       - name: Download ZIP file
         run: |
           curl -L -o download.zip "${{ env.ZIP_URL }}"
-          ls -lh download.zip  # Check if the file is downloaded and display its size
-
+          
       - name: Unzip file
         run: |
-          mkdir -p extracted_content
-          unzip -o download.zip -d ./extracted_content
-          ls -l ./extracted_content  # List files to confirm extraction
-
-      - name: Delete all files from the main branch
-        run: |
-          rm -rf ./*  # Delete all files and folders in the root directory
-          rm -rf .[^.]*  # Delete hidden files, such as .gitignore, but keep the .git folder
-
-      - name: Move unzipped content to root directory
-        run: |
-          if [ -n "$(ls -A ./extracted_content)" ]; then
-            mv ./extracted_content/* ./
-          else
-            echo "No files found in extracted_content directory" && exit 1
-          fi
-          rm -rf extracted_content  # Clean up extracted_content directory
+          unzip -o download.zip -d .
 
       - name: Commit and push changes
         env:
@@ -50,5 +37,5 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add .
-          git commit -m "Replace main branch content with unzipped files" || echo "No changes to commit"
+          git commit -m "Replace main with new version from Flipsite Editor" || echo "No changes to commit"
           git push origin main --force
