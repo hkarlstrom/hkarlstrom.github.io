@@ -1,0 +1,47 @@
+name: Flipsite Editor Update
+
+on:
+  repository_dispatch:
+    types: [flipsite_update]
+
+jobs:
+  replace_main_branch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the main branch
+        uses: actions/checkout@v2
+        with:
+          ref: main  # Ensure we're working on the main branch
+
+      - name: Extract ZIP URL from payload
+        id: extract
+        run: echo "ZIP_URL=${{ github.event.client_payload.zip_url }}" >> $GITHUB_ENV
+
+      - name: Download ZIP file
+        run: |
+          curl -L -o download.zip "${{ env.ZIP_URL }}"
+
+      - name: Unzip file
+        run: |
+          unzip -o download.zip -d ./extracted_content
+
+      - name: Delete all files from the main branch
+        run: |
+          rm -rf ./*  # Delete all files and folders in the root directory
+          rm -rf .[^.]*  # Delete hidden files, such as .gitignore, but keep the .git folder
+
+      - name: Move unzipped content to root directory
+        run: |
+          mv ./extracted_content/* ./
+          rm -rf extracted_content  # Clean up extracted_content directory
+
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add .
+          git commit -m "Replace main branch content with unzipped files"
+          git push origin main --force
