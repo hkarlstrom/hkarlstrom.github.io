@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /
-# No sitemap if not live
-# Sitemap: https://hkarlstrom.github.io/sitemap.xml
