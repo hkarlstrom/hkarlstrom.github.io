@@ -1,8 +1,8 @@
-name: Deploy from Flipsite
+name: Publish from Flipsite
 
 on:
   repository_dispatch:
-    types: [flipsite_deploy]
+    types: [flipsite_publish]
 
 concurrency:
   group: "pages"
