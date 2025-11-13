@@ -1,4 +1,4 @@
-name: Flipsite Deploy
+name: Flipsite Publish
 
 # Triggered by external app calling the repository_dispatch API
 on:
