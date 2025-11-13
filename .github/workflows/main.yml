@@ -1,8 +1,8 @@
-name: Flipsite Editor Update
+name: Flipsite Editor Publish
 
 on:
   repository_dispatch:
-    types: [flipsite_update]
+    types: [flipsite_publish]
     
 permissions:
   contents: write
@@ -29,7 +29,7 @@ jobs:
 
       - name: Extract ZIP URL from payload
         id: extract
-        run: echo "ZIP_URL=${{ github.event.client_payload.zip_url }}" >> $GITHUB_ENV
+        run: echo "ZIP_URL=${{ github.event.client_payload.download.url }}" >> $GITHUB_ENV
 
       - name: Download ZIP file
         run: |
